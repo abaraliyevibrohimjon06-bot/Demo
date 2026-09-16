@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heart Of Love</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#f6ecff;
+    --muted:#b9a9d6;
+    --rose:#ff5d7a;
+    --rose-deep:#c81e4a;
+    --gold:#ffd27a;
+    --panel:#1c1030;
+    --panel-2:#160c26;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(120% 90% at 15% 0%, #3a1b4d 0%, transparent 55%),
+      radial-gradient(140% 100% at 85% 100%, #2a1240 0%, transparent 60%),
+      linear-gradient(180deg,#100819,#1a0e28 55%,#100819);
+    color:var(--ink);
+    font-family:'Nunito',system-ui,sans-serif;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:32px 20px 40px;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  body::before{
+    content:'';
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    opacity:.5;
+    background-image:
+      radial-gradient(1.5px 1.5px at 20% 30%, #fff 0, transparent 100%),
+      radial-gradient(1.5px 1.5px at 75% 15%, #fff 0, transparent 100%),
+      radial-gradient(1px 1px at 60% 70%, #fff 0, transparent 100%),
+      radial-gradient(1px 1px at 90% 55%, #fff 0, transparent 100%),
+      radial-gradient(1.5px 1.5px at 35% 85%, #fff 0, transparent 100%),
+      radial-gradient(1px 1px at 10% 65%, #fff 0, transparent 100%);
+  }
+
+  header{
+    text-align:left;
+    width:100%;
+    max-width:420px;
+    margin-bottom:22px;
+    position:relative;
+    z-index:1;
+  }
+  h1{
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size:2.1em;
+    margin:0 0 6px;
+    background:linear-gradient(90deg,#fff,#ffd6e2 65%,var(--rose));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    letter-spacing:.5px;
+  }
+  .sub{
+    color:var(--muted);
+    font-size:.95em;
+    margin:0;
+    max-width:34ch;
+  }
+
+  .stage{
+    width:100%;
+    max-width:420px;
+    background:linear-gradient(165deg,var(--panel),var(--panel-2));
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:26px;
+    padding:20px 18px 22px;
+    position:relative;
+    box-shadow:
+      0 30px 60px rgba(0,0,0,.45),
+      inset 0 1px 0 rgba(255,255,255,.05);
+    overflow:hidden;
+    z-index:1;
+  }
+
+  .row{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:6px;
+    height:230px;
+    position:relative;
+  }
+
+  /* ---- character ---- */
+  .character{
+    flex:0 0 auto;
+    width:118px;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+    user-select:none;
+    transform-origin:70% 90%;
+    transition:transform .1s ease;
+    position:relative;
+    z-index:2;
+  }
+  .character:active{ transform:scale(.97); }
+  .character svg{ width:100%; display:block; overflow:visible; }
+  .character .gun-arm{
+    transform-origin:68px 66px;
+  }
+  .character.shoot .gun-arm{
+    animation:recoil .22s ease;
+  }
+  @keyframes recoil{
+    0%{ transform:rotate(0deg) translateX(0); }
+    30%{ transform:rotate(-8deg) translateX(-3px); }
+    100%{ transform:rotate(0deg) translateX(0); }
+  }
+  .muzzle-flash{
+    opacity:0;
+    transform-origin:108px 71px;
+  }
+  .character.shoot .muzzle-flash{
+    animation:flash .18s ease;
+  }
+  @keyframes flash{
+    0%{ opacity:1; transform:scale(.6) rotate(-10deg); }
+    100%{ opacity:0; transform:scale(1.3) rotate(10deg); }
+  }
+
+  /* ---- heart balloon + hp ---- */
+  .heart-wrap{
+    position:relative;
+    width:150px;
+    height:230px;
+    flex:0 0 auto;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-end;
+  }
+  .hp-block{
+    width:100%;
+    margin-bottom:8px;
+    text-align:center;
+  }
+  .hp-label{
+    font-family:'Baloo 2', sans-serif;
+    font-size:.82em;
+    color:#ffd6e2;
+    margin-bottom:5px;
+    letter-spacing:.3px;
+  }
+  .hp-bar{
+    width:100%;
+    height:9px;
+    border-radius:6px;
+    background:rgba(255,255,255,.12);
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.15);
+  }
+  .hp-fill{
+    height:100%;
+    width:100%;
+    background:linear-gradient(90deg,var(--rose-deep),var(--rose));
+    transition:width .25s ease;
+  }
+  .balloon-holder{
+    position:relative;
+    width:150px;
+    height:190px;
+  }
+  .balloon-svg{
+    width:100%;
+    height:100%;
+    display:block;
+    filter:drop-shadow(0 8px 16px rgba(200,30,74,.35));
+    transform-origin:50% 40%;
+  }
+  .balloon-holder.hit .balloon-svg{
+    animation:shake .18s ease;
+  }
+  @keyframes shake{
+    0%,100%{ transform:translateX(0) rotate(0deg); }
+    25%{ transform:translateX(-4px) rotate(-3deg); }
+    75%{ transform:translateX(4px) rotate(3deg); }
+  }
+  .balloon-holder.popped .balloon-svg{
+    animation:pop .32s ease forwards;
+  }
+  @keyframes pop{
+    0%{ transform:scale(1); opacity:1; }
+    60%{ transform:scale(1.35); opacity:1; }
+    100%{ transform:scale(0); opacity:0; }
+  }
+  .shard{
+    position:absolute;
+    width:8px;
+    height:8px;
+    background:var(--rose);
+    border-radius:1px;
+    opacity:0;
+    pointer-events:none;
+  }
+  .pop-text{
+    position:absolute;
+    left:50%;
+    top:44%;
+    transform:translate(-50%,-50%) scale(.7);
+    background:#fff;
+    color:#1a0e28;
+    font-family:'Nunito',sans-serif;
+    font-weight:800;
+    font-size:.92em;
+    text-align:center;
+    padding:10px 14px;
+    border-radius:14px;
+    line-height:1.25;
+    width:150px;
+    opacity:0;
+    box-shadow:0 10px 24px rgba(0,0,0,.4);
+    z-index:4;
+  }
+  .pop-text::after{
+    content:'';
+    position:absolute;
+    left:50%;
+    bottom:-8px;
+    transform:translateX(-50%);
+    border:8px solid transparent;
+    border-top-color:#fff;
+  }
+  .pop-text.show{
+    animation:popIn .35s cubic-bezier(.34,1.56,.64,1) forwards;
+  }
+  @keyframes popIn{
+    to{ opacity:1; transform:translate(-50%,-50%) scale(1); }
+  }
+
+  /* bullet */
+  .bullet{
+    position:absolute;
+    width:10px;
+    height:3px;
+    border-radius:2px;
+    background:#fff6d8;
+    box-shadow:0 0 6px 1px rgba(255,246,216,.8);
+    pointer-events:none;
+    z-index:3;
+  }
+
+  .controls{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:18px;
+    gap:12px;
+  }
+  .hint{
+    color:var(--muted);
+    font-size:.82em;
+    margin:0;
+  }
+  .reset{
+    background:transparent;
+    border:1px solid rgba(255,255,255,.18);
+    color:var(--ink);
+    padding:9px 16px;
+    border-radius:20px;
+    font-size:.82em;
+    font-family:'Nunito',sans-serif;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .reset:active{ background:rgba(255,255,255,.08); }
+
+  @media (prefers-reduced-motion: reduce){
+    .character.shoot .gun-arm, .character.shoot .muzzle-flash,
+    .balloon-holder.hit .balloon-svg, .balloon-holder.popped .balloon-svg,
+    .bullet, .pop-text.show{ animation:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Heart Of Love</h1>
+  <p class="sub">Odamchani bosganingda pistoletdan otadi — yurak sharchani "joni" tugasa, u yoriladi.</p>
+</header>
+
+<div class="stage">
+  <div class="row">
+    <div class="character" id="character" role="button" aria-label="Otish" tabindex="0">
+      <svg viewBox="0 0 130 150">
+        <!-- head -->
+        <circle cx="52" cy="32" r="27" fill="#fdfaf7" stroke="#221d24" stroke-width="2.2"/>
+        <circle cx="44" cy="30" r="2" fill="#221d24"/>
+        <circle cx="60" cy="30" r="2" fill="#221d24"/>
+        <path d="M43 39 Q52 44 61 39" stroke="#221d24" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <ellipse cx="34" cy="35" rx="4" ry="2.6" fill="var(--rose)" opacity=".55"/>
+        <ellipse cx="70" cy="35" rx="4" ry="2.6" fill="var(--rose)" opacity=".55"/>
+
+        <!-- body: simple rounded rectangle, thin outline like a doodle -->
+        <rect x="34" y="60" width="36" height="46" rx="15" fill="#fdfaf7" stroke="#221d24" stroke-width="2.2"/>
+
+        <!-- legs, with small drawn feet -->
+        <path d="M44 106 L39 140 L32 143" fill="none" stroke="#221d24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M60 106 L65 140 L72 143" fill="none" stroke="#221d24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <!-- resting arm, hanging naturally at the side -->
+        <path d="M36 66 C28 74, 25 84, 27 94" fill="none" stroke="#221d24" stroke-width="2.2" stroke-linecap="round"/>
+
+        <!-- gun arm, raised slightly like taking aim -->
+        <g class="gun-arm">
+          <path d="M68 66 C80 64, 91 68, 99 74" fill="none" stroke="#221d24" stroke-width="2.2" stroke-linecap="round"/>
+          <!-- pistol, drawn in the same thin doodle line style -->
+          <g transform="translate(97,66) rotate(4)">
+            <rect x="0" y="0" width="20" height="7" rx="2" fill="none" stroke="#221d24" stroke-width="2"/>
+            <rect x="2" y="6" width="7" height="11" rx="2" fill="none" stroke="#221d24" stroke-width="2"/>
+            <rect x="19" y="1.5" width="7" height="3.5" rx="1" fill="none" stroke="#221d24" stroke-width="1.6"/>
+          </g>
+        </g>
+        <!-- muzzle flash -->
+        <g class="muzzle-flash">
+          <path d="M125 66 l9 -5 l-2 6 l8 -2 l-6 6 l7 2 l-9 3 l3 6 l-9 -4 l-1 7 l-4 -7 l-6 4 l1 -8 l-8 1 l6 -6 l-7 -3 l9 -1 z"
+                fill="var(--gold)"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="heart-wrap">
+      <div class="hp-block">
+        <div class="hp-label" id="hpLabel">Joni: 5</div>
+        <div class="hp-bar"><div class="hp-fill" id="hpFill"></div></div>
+      </div>
+      <div class="balloon-holder" id="balloonHolder">
+        <svg class="balloon-svg" id="balloonSvg" viewBox="0 0 100 120">
+          <defs>
+            <linearGradient id="balloonGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--rose)"/>
+              <stop offset="60%" stop-color="var(--rose-deep)"/>
+              <stop offset="100%" stop-color="#7a1030"/>
+            </linearGradient>
+          </defs>
+          <line x1="50" y1="86" x2="50" y2="116" stroke="#8a7a9c" stroke-width="1.4"/>
+          <path d="M50 84 C22 63 5 46 5 27 C5 11 17 1 30 5 C39 8 46 15 50 24 C54 15 61 8 70 5 C83 1 95 11 95 27 C95 46 78 63 50 84 Z"
+                fill="url(#balloonGrad)" stroke="rgba(255,255,255,.25)" stroke-width="1.6"/>
+          <ellipse cx="30" cy="24" rx="7" ry="10" fill="#fff" opacity=".25"/>
+        </svg>
+        <div class="pop-text" id="popText">Nima qilyapsiz, hotin aka?!</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <p class="hint">Odamchani bosing</p>
+    <button class="reset" id="resetBtn">Qayta boshlash</button>
+  </div>
+</div>
+
+<script>
+const character     = document.getElementById('character');
+const balloonHolder  = document.getElementById('balloonHolder');
+const balloonSvg     = document.getElementById('balloonSvg');
+const hpFill         = document.getElementById('hpFill');
+const hpLabel        = document.getElementById('hpLabel');
+const popText        = document.getElementById('popText');
+
+const MAX_HP = 5;
+let hp = MAX_HP;
+let popped = false;
+
+function paintHp(){
+  hpFill.style.width = Math.max(0,(hp/MAX_HP)*100) + '%';
+  hpLabel.textContent = 'Joni: ' + Math.max(0,hp);
+}
+
+function spawnBullet(){
+  const stage = character.closest('.stage');
+  const stageRect = stage.getBoundingClientRect();
+  const gunTip = character.getBoundingClientRect();
+  const target = balloonSvg.getBoundingClientRect();
+
+  const startX = gunTip.left - stageRect.left + gunTip.width*0.97;
+  const startY = gunTip.top  - stageRect.top  + gunTip.height*0.46;
+  const endX   = target.left - stageRect.left + target.width*0.5;
+  const endY   = target.top  - stageRect.top  + target.height*0.42;
+
+  const b = document.createElement('div');
+  b.className = 'bullet';
+  b.style.left = startX + 'px';
+  b.style.top  = startY + 'px';
+  stage.appendChild(b);
+
+  const dx = endX - startX;
+  const dy = endY - startY;
+  const angle = Math.atan2(dy,dx) * 180/Math.PI;
+  b.style.transform = `rotate(${angle}deg)`;
+
+  const anim = b.animate([
+    { transform:`rotate(${angle}deg) translateX(0)`, opacity:1 },
+    { transform:`rotate(${angle}deg) translateX(${Math.hypot(dx,dy)}px)`, opacity:1 }
+  ], { duration:130, easing:'linear' });
+
+  anim.onfinish = () => {
+    b.remove();
+    hitBalloon();
+  };
+}
+
+function hitBalloon(){
+  if(popped) return;
+  hp -= 1;
+  paintHp();
+
+  balloonHolder.classList.remove('hit');
+  void balloonHolder.offsetWidth;
+  balloonHolder.classList.add('hit');
+
+  if(hp <= 0){
+    popBalloon();
+  }
+}
+
+function popBalloon(){
+  popped = true;
+  balloonHolder.classList.add('popped');
+  spawnShards();
+  setTimeout(()=>{
+    popText.classList.add('show');
+  }, 220);
+}
+
+function spawnShards(){
+  const rect = balloonSvg.getBoundingClientRect();
+  const stage = character.closest('.stage');
+  const stageRect = stage.getBoundingClientRect();
+  const cx = rect.left - stageRect.left + rect.width*0.5;
+  const cy = rect.top  - stageRect.top  + rect.height*0.42;
+
+  for(let i=0;i<10;i++){
+    const s = document.createElement('div');
+    s.className = 'shard';
+    s.style.left = cx + 'px';
+    s.style.top  = cy + 'px';
+    s.style.background = i % 2 === 0 ? 'var(--rose)' : 'var(--gold)';
+    stage.appendChild(s);
+
+    const ang = Math.random()*Math.PI*2;
+    const dist = 40 + Math.random()*40;
+    const dx = Math.cos(ang)*dist;
+    const dy = Math.sin(ang)*dist;
+
+    const anim = s.animate([
+      { transform:'translate(0,0) scale(1)', opacity:1 },
+      { transform:`translate(${dx}px,${dy}px) scale(.3)`, opacity:0 }
+    ], { duration:480, easing:'cubic-bezier(.2,.7,.4,1)' });
+    anim.onfinish = () => s.remove();
+  }
+}
+
+function shoot(){
+  if(popped) return;
+  character.classList.remove('shoot');
+  void character.offsetWidth;
+  character.classList.add('shoot');
+  spawnBullet();
+}
+
+character.addEventListener('click', shoot);
+character.addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); shoot(); }
+});
+
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  hp = MAX_HP;
+  popped = false;
+  paintHp();
+  balloonHolder.classList.remove('popped','hit');
+  popText.classList.remove('show');
+});
+
+paintHp();
+</script>
+
+</body>
+</html>
